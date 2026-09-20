@@ -1,6 +1,7 @@
-import { Order } from "../models/Order";
+import { Order, type PaymentMode } from "../models/Order";
 import { OrderItem } from "../models/OrderItem";
 import { User } from "../models/User";
+import { Product } from "../models/Product";
 
 export const searchOrders = async (
   by?: string,
@@ -186,3 +187,100 @@ export const getOrderById = async (orderId: string) => {
     items,
   };
 };
+
+interface CreateOrderItemData {
+  productId: string;
+  quantity: number;
+  discount?: number;
+  deliveryCharges?: number;
+}
+
+interface CreateOrderData {
+  customerId: string;
+  paymentMode: PaymentMode;
+  items: CreateOrderItemData[];
+}
+
+export const createOrder = async (data: CreateOrderData) => {
+  const customer = await User.findById(data.customerId);
+
+  if (!customer) {
+    const error: any = new Error("Customer not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const productIds = data.items.map((item) => item.productId);
+
+  // One DB query instead of one query per item
+  const products = await Product.find({
+    _id: { $in: productIds },
+    isActive: true,
+  });
+
+  if (products.length !== productIds.length) {
+    const error: any = new Error("One or more products not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  // Create quick lookup map in memory
+  const productMap = new Map(
+    products.map(
+      (product) => [product._id.toString(), product] as const
+    )
+  );
+
+  let totalAmount = 0;
+
+  const orderItemsData = data.items.map((item) => {
+    const product = productMap.get(item.productId);
+
+    const discount = item.discount || 0;
+    const deliveryCharges = item.deliveryCharges || 0;
+
+    const itemTotal =
+      product!.price * item.quantity -
+      discount +
+      deliveryCharges;
+
+    totalAmount += itemTotal;
+
+    return {
+      productId: product!._id,
+      productName: product!.name,
+      model: product!.model,
+      image: product!.image,
+      price: product!.price,
+      quantity: item.quantity,
+      discount,
+      deliveryCharges,
+      status: "PENDING",
+    };
+  });
+
+  const orderId = Math.floor(
+    10000000 + Math.random() * 90000000
+  ).toString();
+
+  const order = await Order.create({
+    orderId,
+    customerId: data.customerId,
+    paymentMode: data.paymentMode,
+    orderDate: new Date(),
+    totalAmount,
+  });
+
+  const orderItems = orderItemsData.map((item) => ({
+    ...item,
+    orderId: order._id,
+  }));
+
+  await OrderItem.insertMany(orderItems);
+
+  return {
+    order,
+    items: orderItems,
+  };
+};
+

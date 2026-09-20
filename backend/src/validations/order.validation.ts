@@ -1,17 +1,40 @@
 import { body, query, param } from "express-validator";
 
+export const searchOrderValidation = [
+  query("by")
+    .optional({ values: "falsy" })
+    .isIn(["orderId", "mobile", "name", "email"])
+    .withMessage("Invalid search type"),
+
+  query("value")
+    .optional({ values: "falsy" })
+    .trim(),
+];
+
+export const orderIdValidation = [
+  param("orderId")
+    .notEmpty()
+    .withMessage("Order ID is required"),
+];
+
+
 export const createOrderValidation = [
   body("customerId")
     .notEmpty()
     .withMessage("Customer ID is required"),
 
   body("paymentMode")
-    .isIn(["cod", "Credit Card", "Debit Card", "UPI"])
+    .isIn([
+      "COD",
+      "CREDIT CARD",
+      "DEBIT CARD",
+      "UPI",
+    ])
     .withMessage("Invalid payment mode"),
 
   body("items")
     .isArray({ min: 1 })
-    .withMessage("At least one order item is required"),
+    .withMessage("At least one item is required"),
 
   body("items.*.productId")
     .notEmpty()
@@ -30,21 +53,4 @@ export const createOrderValidation = [
     .optional()
     .isFloat({ min: 0 })
     .withMessage("Delivery charges must be a positive number"),
-];
-
-export const searchOrderValidation = [
-  query("by")
-    .optional({ values: "falsy" })
-    .isIn(["orderId", "mobile", "name", "email"])
-    .withMessage("Invalid search type"),
-
-  query("value")
-    .optional({ values: "falsy" })
-    .trim(),
-];
-
-export const orderIdValidation = [
-  param("orderId")
-    .notEmpty()
-    .withMessage("Order ID is required"),
 ];

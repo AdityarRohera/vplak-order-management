@@ -3,26 +3,8 @@ import { Request, Response, NextFunction } from "express";
 import {
   searchOrders as searchOrdersService,
   getOrderById as getOrderByIdService,
-//   createOrder as createOrderService,
+  createOrder as createOrderService,
 } from "../services/order.service"
-
-// export const createOrder = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const result = await createOrderService(req.body);
-
-//     res.status(201).json({
-//       success: true,
-//       message: "Order created successfully",
-//       data: result,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 
 export const searchOrders = async (
   req: Request,
@@ -59,6 +41,24 @@ export const getOrderById = async (
     res.status(200).json({
       success: true,
       data: order,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const result = await createOrderService(req.body);
+
+    res.status(201).json({
+      success: true,
+      message: "Order created successfully",
+      data: result,
     });
   } catch (error) {
     next(error);
