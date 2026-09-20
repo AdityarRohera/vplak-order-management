@@ -34,7 +34,7 @@ const orderItemSchema = new Schema<IOrderItem>(
   {
     _id: {
       type: String,
-      default: uuidv4(),
+      default: () => uuidv4(),
     },
 
     // Reference to Order

@@ -14,7 +14,7 @@ const categorySchema = new Schema<ICategory>(
   {
     _id: {
       type: String,
-      default: uuidv4()
+      default: () => uuidv4()
     },
 
     name: {

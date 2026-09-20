@@ -1,4 +1,6 @@
 import { Product } from "../models/Product";
+// registers the Category schema so .populate("categoryId") works
+import "../models/Category";
 
 export const createProduct = async (data: any) => {
   const product = await Product.create(data);

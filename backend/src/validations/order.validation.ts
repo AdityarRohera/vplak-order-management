@@ -34,13 +34,13 @@ export const createOrderValidation = [
 
 export const searchOrderValidation = [
   query("by")
+    .optional({ values: "falsy" })
     .isIn(["orderId", "mobile", "name", "email"])
     .withMessage("Invalid search type"),
 
   query("value")
-    .trim()
-    .notEmpty()
-    .withMessage("Search value is required"),
+    .optional({ values: "falsy" })
+    .trim(),
 ];
 
 export const orderIdValidation = [

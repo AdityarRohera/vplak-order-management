@@ -3,13 +3,17 @@ import { OrderItem } from "../models/OrderItem";
 import { User } from "../models/User";
 
 export const searchOrders = async (
-  by: string,
-  value: string
+  by?: string,
+  value?: string
 ) => {
   let orders;
 
+  // No filter -> return all orders
+  if (!by || !value) {
+    orders = await Order.find({});
+  }
   // Search directly by orderId
-  if (by === "orderId") {
+  else if (by === "orderId") {
     orders = await Order.find({
       orderId: value,
     });

@@ -24,7 +24,7 @@ const orderSchema = new Schema<IOrder>(
   {
     _id: {
       type: String,
-      default: uuidv4()
+      default: () => uuidv4()
     },
 
     // Human-readable/business order number

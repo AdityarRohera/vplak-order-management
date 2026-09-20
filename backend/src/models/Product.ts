@@ -19,7 +19,7 @@ const productSchema = new Schema<IProduct>(
   {
     _id: {
       type: String,
-      default: uuidv4()
+      default: () => uuidv4()
     },
 
     name: {
