@@ -1,15 +1,29 @@
 
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+
 import { register } from "../services/auth.api";
 
+const fields = [
+  { name: "name", label: "Name", type: "text" },
+  { name: "email", label: "Email", type: "email" },
+  { name: "phone", label: "Phone", type: "text" },
+  { name: "password", label: "Password", type: "password" },
+  { name: "state", label: "State", type: "text" },
+];
+
 const Register = () => {
+  const navigate = useNavigate();
+
   const [data, setData] = useState({
     name: "",
     email: "",
     phone: "",
     password: "",
-    state : ""
+    state: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -24,94 +38,84 @@ const Register = () => {
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      const res = await register(data);
+      await register(data);
 
-      console.log(res);
       alert("Registration successful");
-
-      setData({
-        name: "",
-        email: "",
-        phone: "",
-        password: "",
-        state : ""
-      });
+      navigate("/login");
     } catch (err: any) {
-      console.log(err);
       alert(
         err.response?.data?.message ||
           "Registration failed"
       );
     }
+
+    setLoading(false);
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+    <div className="flex min-h-screen items-center justify-center bg-slate-100 p-6">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md rounded-lg bg-white p-6 shadow-md"
+        className="w-full max-w-md overflow-hidden rounded-lg bg-white shadow"
       >
-        <h1 className="mb-6 text-center text-2xl font-bold">
-          Register
-        </h1>
+        <div className="bg-slate-800 px-6 py-4">
+          <span className="text-xl font-bold text-white">
+            VPLAK
+          </span>
+        </div>
 
-        <input
-          name="name"
-          type="text"
-          placeholder="Name"
-          value={data.name}
-          onChange={handleChange}
-          className="mb-4 w-full rounded border p-3"
-        />
+        <div className="bg-gradient-to-r from-teal-700 via-teal-600 to-teal-700 px-6 py-6">
+          <h1 className="text-center text-2xl font-bold text-white">
+            CREATE ACCOUNT
+          </h1>
+        </div>
 
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={data.email}
-          onChange={handleChange}
-          className="mb-4 w-full rounded border p-3"
-        />
+        <div className="p-6">
+          {fields.map((field) => (
+            <div key={field.name}>
+              <label
+                htmlFor={field.name}
+                className="mb-2 block font-bold text-gray-700"
+              >
+                {field.label}
+              </label>
 
-        <input
-          name="phone"
-          type="text"
-          placeholder="Phone"
-          value={data.phone}
-          onChange={handleChange}
-          className="mb-4 w-full rounded border p-3"
-        />
+              <input
+                id={field.name}
+                name={field.name}
+                type={field.type}
+                placeholder={`Enter ${field.label.toLowerCase()}...`}
+                value={data[field.name as keyof typeof data]}
+                onChange={handleChange}
+                className="mb-5 w-full rounded border border-gray-300 p-3 focus:border-teal-600 focus:outline-none"
+              />
+            </div>
+          ))}
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={data.password}
-          onChange={handleChange}
-          className="mb-4 w-full rounded border p-3"
-        />
-        
-        <input
-          name="state"
-          type="text"
-          placeholder="State"
-          value={data.state}
-          onChange={handleChange}
-          className="mb-4 w-full rounded border p-3"
-        />
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded bg-green-600 p-3 font-bold text-white hover:bg-green-700 disabled:bg-gray-400"
+          >
+            {loading ? "CREATING..." : "REGISTER"}
+          </button>
 
-        <button
-          type="submit"
-          className="w-full rounded bg-green-600 p-3 text-white hover:bg-green-700"
-        >
-          Register
-        </button>
+          <p className="mt-5 text-center text-gray-600">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="font-medium text-blue-600 underline"
+            >
+              Login
+            </Link>
+          </p>
+        </div>
       </form>
     </div>
   );
 };
 
 export default Register;
-

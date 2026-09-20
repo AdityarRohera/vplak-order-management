@@ -67,11 +67,20 @@ export const searchOrders = async (
       $unwind: "$customer",
     },
     {
+      $lookup: {
+        from: "orderitems",
+        localField: "_id",
+        foreignField: "orderId",
+        as: "items",
+      },
+    },
+    {
       $project: {
         orderId: 1,
         orderDate: 1,
         totalAmount: 1,
-        status: 1,
+        paymentMode: 1,
+        items: 1,
         customerId: 1,
 
         customer: {
@@ -114,6 +123,7 @@ export const getOrderById = async (orderId: string) => {
         orderDate: 1,
         status: 1,
         totalAmount: 1,
+        paymentMode: 1,
 
         customer: {
           name: "$customer.name",
@@ -154,6 +164,8 @@ export const getOrderById = async (orderId: string) => {
       $project: {
         productId: 1,
         productName: 1,
+        model: 1,
+        image: 1,
         price: 1,
         quantity: 1,
         discount: 1,

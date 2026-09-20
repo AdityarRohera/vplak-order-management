@@ -8,6 +8,7 @@ import {
 import Login from "../pages/Login";
 import SearchOrder from "../pages/SearchOrder";
 import OrderDetails from "../pages/OrderDetails";
+import Products from "../pages/Products";
 
 import RoleRoute from "./RoleRoute";
 import Register from "../pages/Register";
@@ -33,8 +34,16 @@ const AppRoutes = () => {
           element={<RoleRoute allowedRole="admin" />}
         >
           <Route
-            path="/orders"
-            element={<SearchOrder />}
+              path="/products"
+              element={<Products />}
+
+          />
+
+
+          <Route
+              path="/orders"
+              element={<SearchOrder />}
+
           />
 
           <Route
