@@ -1,13 +1,12 @@
-
-
 import mongoose, { Document, Schema } from "mongoose";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export interface IUser extends Omit<Document, "_id"> {
   _id: string;
   name: string;
   email: string;
   phone: string;
+  passwordHash: string;
   state?: string;
   role: "customer" | "admin";
   createdAt: Date;
@@ -40,6 +39,11 @@ const userSchema = new Schema<IUser>(
       required: true,
       unique: true,
       trim: true,
+    },
+
+    passwordHash: {
+      type: String,
+      required: true,
     },
 
     state: {

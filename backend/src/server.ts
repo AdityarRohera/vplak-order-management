@@ -5,6 +5,11 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 import connectDB from './config/db'
+import {
+  notFoundMiddleware,
+  errorMiddleware,
+} from "./middleware/error.middleware";
+
 
 
 // Routes
@@ -31,6 +36,13 @@ app.use(
 // app.use("/api/auth", authRoutes);
 // app.use("/api/todos", todoRoutes);
 // app.use("/api/admin", adminRoutes);
+
+
+// 404 handler
+app.use(notFoundMiddleware);
+
+// Error handler - keep this LAST
+app.use(errorMiddleware);
 
 // Start server
 (async function startServer(){
