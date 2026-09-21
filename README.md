@@ -41,11 +41,24 @@ Total = Σ(price × quantity − discount + deliveryCharges)
 
 ```text
 vplak-order-management/
+
 │
 ├── backend/
 ├── frontend/
+│   └── public/
+│       └── order_images/
 └── README.md
 ```
+
+## Screenshots
+
+Screenshots of the Order Management system are included in the frontend's public assets:
+
+```text
+frontend/public/order_images/
+```
+
+The `order_images` folder contains screenshots demonstrating the order listing, order details, customer information, order items, and other parts of the Order Management interface.
 
 ## Run Locally
 
@@ -53,7 +66,9 @@ vplak-order-management/
 
 ```bash
 cd backend
+
 npm install
+
 npm run dev
 ```
 
@@ -61,8 +76,20 @@ npm run dev
 
 ```bash
 cd frontend
+
 npm install
+
 npm run dev
 ```
 
-Create a `.env` file in the backend with MongoDB and JWT configuration.
+## Environment Variables
+
+Create a `.env` file inside the `backend` directory with your MongoDB and JWT configuration.
+
+Example:
+
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+```
